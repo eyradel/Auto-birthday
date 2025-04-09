@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4th-IR Birthday Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .birthday-cake {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+            <div class="container mx-auto py-4 px-4 sm:py-6">
+                <div class="flex flex-col sm:flex-row justify-between items-center">
+                    <div class="flex items-center space-x-4 mb-2 sm:mb-0">
+                        <i class="fas fa-birthday-cake text-2xl sm:text-3xl birthday-cake"></i>
+                        <h1 class="text-xl sm:text-2xl font-bold">4th-IR Birthday Dashboard</h1>
+                    </div>
+                    <div class="flex items-center">
+                        <button id="check-balance-btn" class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-3 py-1 text-sm mr-3">
+                            <i class="fas fa-coins mr-1"></i>Check Balance
+                        </button>
+                        <div class="text-sm">
+                            <p id="today-date">Today: Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="bg-white shadow">
+            <div class="container mx-auto px-2 sm:px-4">
+                <div class="overflow-x-auto no-scrollbar">
+                    <ul class="flex whitespace-nowrap">
+                        <li>
+                            <a href="#dashboard" id="tab-dashboard" class="inline-block py-3 sm:py-4 px-3 sm:px-4 border-b-2 border-blue-500 text-blue-500">
+                                <i class="fas fa-chart-pie mr-1 sm:mr-2"></i><span class="hidden sm:inline">Dashboard</span>
+                                <span class="inline sm:hidden">Home</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#today" id="tab-today" class="inline-block py-3 sm:py-4 px-3 sm:px-4 border-b-2 border-transparent hover:text-blue-500">
+                                <i class="fas fa-cake-candles mr-1 sm:mr-2"></i><span>Today</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#upcoming" id="tab-upcoming" class="inline-block py-3 sm:py-4 px-3 sm:px-4 border-b-2 border-transparent hover:text-blue-500">
+                                <i class="fas fa-calendar-alt mr-1 sm:mr-2"></i><span>Upcoming</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#directory" id="tab-directory" class="inline-block py-3 sm:py-4 px-3 sm:px-4 border-b-2 border-transparent hover:text-blue-500">
+                                <i class="fas fa-address-book mr-1 sm:mr-2"></i><span>Directory</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#send-sms" id="tab-send-sms" class="inline-block py-3 sm:py-4 px-3 sm:px-4 border-b-2 border-transparent hover:text-blue-500">
+                                <i class="fas fa-paper-plane mr-1 sm:mr-2"></i><span>Send SMS</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto px-4 py-4 sm:py-6">
+            <!-- Dashboard Tab -->
+            <div id="content-dashboard" class="tab-content">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="p-2 sm:p-3 rounded-full bg-blue-100 text-blue-500">
+                                <i class="fas fa-cake-candles text-xl sm:text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-xs sm:text-sm text-gray-500">Today's Birthdays</p>
+                                <h3 id="today-count" class="text-2xl sm:text-3xl font-bold">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="p-2 sm:p-3 rounded-full bg-green-100 text-green-500">
+                                <i class="fas fa-envelope-open-text text-xl sm:text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-xs sm:text-sm text-gray-500">SMS Sent</p>
+                                <h3 id="sms-count" class="text-2xl sm:text-3xl font-bold">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="p-2 sm:p-3 rounded-full bg-purple-100 text-purple-500">
+                                <i class="fas fa-calendar-day text-xl sm:text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-xs sm:text-sm text-gray-500">Upcoming (30 Days)</p>
+                                <h3 id="upcoming-count" class="text-2xl sm:text-3xl font-bold">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Birthday Lists -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                    <!-- Today's Birthdays -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="border-b px-4 sm:px-6 py-3 sm:py-4">
+                            <h3 class="text-base sm:text-lg font-medium">Today's Birthdays</h3>
+                        </div>
+                        <div class="p-4 sm:p-6">
+                            <div id="dashboard-today-list" class="space-y-3 sm:space-y-4">
+                                <!-- Today's birthdays will be populated here -->
+                                <p id="dashboard-no-birthdays-today" class="text-gray-500">No birthdays today!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Birthdays -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="border-b px-4 sm:px-6 py-3 sm:py-4">
+                            <h3 class="text-base sm:text-lg font-medium">Upcoming Birthdays</h3>
+                        </div>
+                        <div class="p-4 sm:p-6">
+                            <div id="dashboard-upcoming-list" class="space-y-3 sm:space-y-4">
+                                <!-- Upcoming birthdays will be populated here -->
+                                <p id="dashboard-no-upcoming" class="text-gray-500">No upcoming birthdays in the next 30 days!</p>
+                            </div>
+                            <div id="view-all-upcoming" class="mt-4 text-center hidden">
+                                <a href="#upcoming" class="text-blue-500 hover:underline">View all upcoming</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Log -->
+                <div class="mt-4 sm:mt-6 bg-white rounded-lg shadow">
+                    <div class="border-b px-4 sm:px-6 py-3 sm:py-4">
+                        <h3 class="text-base sm:text-lg font-medium">Activity Log</h3>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <pre id="activity-log" class="bg-gray-100 p-3 sm:p-4 rounded-lg text-xs sm:text-sm overflow-x-auto max-h-40 sm:max-h-60">
+=== Birthday Dashboard Log ===
+System initialized successfully
+Loaded birthday data
+Ready to send birthday messages
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Birthdays Tab -->
+            <div id="content-today" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow">
+                    <div class="border-b px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row justify-between sm:items-center">
+                        <h3 class="text-base sm:text-lg font-medium mb-2 sm:mb-0">Today's Birthdays (<span id="today-count-2">0</span>)</h3>
+                        <button id="btn-goto-send" class="bg-blue-500 hover:bg-blue-600 text-white py-1 sm:py-2 px-3 sm:px-4 rounded-lg text-sm">
+                            <i class="fas fa-paper-plane mr-1 sm:mr-2"></i>Send Messages
+                        </button>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <div id="today-table-container" class="overflow-x-auto -mx-4 sm:mx-0">
+                            <div class="inline-block min-w-full sm:px-0 align-middle">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Birth Date</th>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Email</th>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="today-table-body" class="bg-white divide-y divide-gray-200">
+                                        <!-- Today's birthdays table rows will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="no-birthdays-today-container" class="text-center py-8 sm:py-10 hidden">
+                            <div class="text-gray-400 mb-4">
+                                <i class="fas fa-calendar-times fa-3x sm:fa-4x"></i>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-medium text-gray-900">No Birthdays Today</h3>
+                            <p class="text-sm text-gray-500 mt-1">Check back tomorrow or visit upcoming birthdays!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Birthdays Tab -->
+            <div id="content-upcoming" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow">
+                    <div class="border-b px-4 sm:px-6 py-3 sm:py-4">
+                        <h3 class="text-base sm:text-lg font-medium">Upcoming Birthdays (Next 30 Days)</h3>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <div id="upcoming-table-container" class="overflow-x-auto -mx-4 sm:mx-0">
+                            <div class="inline-block min-w-full sm:px-0 align-middle">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Birth Date</th>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Email</th>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Phone</th>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Days</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="upcoming-table-body" class="bg-white divide-y divide-gray-200">
+                                        <!-- Upcoming birthdays table rows will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="no-upcoming-container" class="text-center py-8 sm:py-10 hidden">
+                            <div class="text-gray-400 mb-4">
+                                <i class="fas fa-calendar-times fa-3x sm:fa-4x"></i>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-medium text-gray-900">No Upcoming Birthdays</h3>
+                            <p class="text-sm text-gray-500 mt-1">No birthdays in the next 30 days!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Directory Tab -->
+            <div id="content-directory" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow">
+                    <div class="border-b px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
+                        <h3 class="text-base sm:text-lg font-medium">Full Directory (<span id="directory-count">0</span> people)</h3>
+                        <div class="relative w-full sm:w-auto">
+                            <input type="text" id="directorySearch" placeholder="Search..." class="w-full sm:w-auto pl-8 pr-3 py-1 sm:py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <div class="absolute left-2 top-1.5 sm:top-2.5 text-gray-400">
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <div class="overflow-x-auto -mx-4 sm:mx-0">
+                            <div class="inline-block min-w-full sm:px-0 align-middle">
+                                <table id="directoryTable" class="min-w-full divide-y divide-gray-200">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Birth Date</th>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Email</th>
+                                            <th class="px-3 sm:px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="directory-table-body" class="bg-white divide-y divide-gray-200">
+                                        <!-- Directory table rows will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Send SMS Tab -->
+            <div id="content-send-sms" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow">
+                    <div class="border-b px-4 sm:px-6 py-3 sm:py-4">
+                        <h3 class="text-base sm:text-lg font-medium">Send Manual Birthday Messages</h3>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <div id="sms-status" class="hidden mb-4 sm:mb-6 text-sm p-3 sm:p-4 border-l-4"></div>
+                        
+                        <div class="mb-4 sm:mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="custom_message">
+                                Custom Message (use {name} to include recipient's name)
+                            </label>
+                            <textarea id="custom_message" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">Happy Birthday {name}! 🎂 Wishing you a fantastic day filled with joy and celebration. From all of us at 4th-IR.</textarea>
+                        </div>
+                        
+                        <div class="mb-4 sm:mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Select Recipients
+                            </label>
+                            
+                            <div class="mt-2 flex flex-wrap gap-2 mb-4">
+                                <button type="button" id="selectAllBtn" class="bg-blue-100 text-blue-700 py-1 px-2 sm:px-3 rounded-full text-xs">Select All</button>
+                                <button type="button" id="selectNoneBtn" class="bg-gray-100 text-gray-700 py-1 px-2 sm:px-3 rounded-full text-xs">Select None</button>
+                                <button type="button" id="selectTodayBtn" class="bg-green-100 text-green-700 py-1 px-2 sm:px-3 rounded-full text-xs">Today's Birthdays</button>
+                            </div>
+                            
+                            <div class="bg-gray-50 rounded-lg p-3 sm:p-4 max-h-60 sm:max-h-96 overflow-y-auto">
+                                <div class="overflow-x-auto -mx-2 sm:mx-0">
+                                    <table class="min-w-full">
+                                        <thead>
+                                            <tr>
+                                                <th class="w-6 sm:w-8"></th>
+                                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Birth Date</th>
+                                                <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Phone</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recipients-table-body">
+                                            <!-- Recipients table rows will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <button type="button" id="sendSmsBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1.5 sm:py-2 px-3 sm:px-4 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fas fa-paper-plane mr-1 sm:mr-2"></i>Send Messages
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t py-3 sm:py-4 mt-auto">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+                    <p class="text-xs sm:text-sm text-gray-600">© 2025 4th-IR Birthday Dashboard</p>
+                    <p class="text-xs sm:text-sm text-gray-600" id="footer-date">Today: Loading...</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Global variables
+        let birthdays = [];
+        let todayBirthdays = [];
+        let upcomingBirthdays = [];
+        let smsSent = new Set(); // Keep track of sent messages
+        let currentMonth = new Date().getMonth() + 1; // 1-12
+        let currentDay = new Date().getDate();
+        let activeTab = 'dashboard';
+
+        // Helper function to format date
+        function formatDate(dateStr) {
+            // Already in DD/MM/YYYY format, so return as is
+            return dateStr;
+        }
+
+        // Helper function to calculate days until birthday
+        function daysUntilBirthday(month, day) {
+            const today = new Date();
+            const birthday = new Date(today.getFullYear(), month - 1, day);
+            
+            // If birthday has passed this year, use next year's date
+            if (birthday < today) {
+                birthday.setFullYear(today.getFullYear() + 1);
+            }
+            
+            const diffTime = birthday.getTime() - today.getTime();
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        // Helper function to get full name
+        function getFullName(person) {
+            return `${person['First Name']} ${person['Last Name']}`.trim();
+        }
+
+        // Function to load birthday data
+        async function loadBirthdayData() {
+            try {
+                // In a real app this would be a fetch call to an API
+                // For this demo, we'll use the window.birthday_data that was loaded earlier
+                const response = await fetch('birthday.json');
+                birthdays = await response.json();
+                
+                processBirthdayData();
+                updateUI();
+                logActivity("Birthday data loaded successfully. Found " + birthdays.length + " records.");
+            } catch (error) {
+                console.error("Error loading birthday data:", error);
+                logActivity("ERROR: Failed to load birthday data: " + error.message);
+            }
+        }
+
+        // Function to process birthday data
+        function processBirthdayData() {
+            todayBirthdays = [];
+            upcomingBirthdays = [];
+            
+            // Process each person
+            birthdays.forEach(person => {
+                const month = parseInt(person.Month);
+                const day = parseInt(person.Day);
+                
+                // Check if today is their birthday
+                if (month === currentMonth && day === currentDay) {
+                    todayBirthdays.push(person);
+                }
+                
+                // Check for upcoming birthdays (next 30 days)
+                const daysUntil = daysUntilBirthday(month, day);
+                if (daysUntil > 0 && daysUntil <= 30) {
+                    upcomingBirthdays.push({
+                        ...person,
+                        daysUntil: daysUntil
+                    });
+                }
+            });
+            
+            // Sort upcoming birthdays by days until
+            upcomingBirthdays.sort((a, b) => a.daysUntil - b.daysUntil);
+        }
+
+        // Function to update the UI with birthday data
+        function updateUI() {
+            // Update counts
+            document.getElementById('today-count').textContent = todayBirthdays.length;
+            document.getElementById('today-count-2').textContent = todayBirthdays.length;
+            document.getElementById('sms-count').textContent = smsSent.size;
+            document.getElementById('upcoming-count').textContent = upcomingBirthdays.length;
+            document.getElementById('directory-count').textContent = birthdays.length;
+            
+            // Update today's dates
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = today.toLocaleDateString('en-US', options);
+            document.getElementById('today-date').textContent = `Today: ${dateString}`;
+            document.getElementById('footer-date').textContent = `Today: ${dateString}`;
+            
+            // Update dashboard today's birthdays
+            const dashboardTodayList = document.getElementById('dashboard-today-list');
+            const noBirthdaysTodayMsg = document.getElementById('dashboard-no-birthdays-today');
+            
+            if (todayBirthdays.length > 0) {
+                dashboardTodayList.innerHTML = '';
+                noBirthdaysTodayMsg.classList.add('hidden');
+                
+                todayBirthdays.forEach(person => {
+                    const fullName = getFullName(person);
+                    const html = `
+                        <div class="flex items-center p-2 sm:p-3 border rounded-lg">
+                            <div class="p-2 rounded-full bg-blue-100 text-blue-500">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="ml-3 overflow-hidden">
+                                <h4 class="font-medium truncate">${fullName}</h4>
+                                <p class="text-xs sm:text-sm text-gray-500 truncate">${person['Email Address']}</p>
+                            </div>
+                        </div>
+                    `;
+                    dashboardTodayList.innerHTML += html;
+                });
+            } else {
+                noBirthdaysTodayMsg.classList.remove('hidden');
+            }
+            
+            // Update dashboard upcoming birthdays
+            const dashboardUpcomingList = document.getElementById('dashboard-upcoming-list');
+            const noUpcomingMsg = document.getElementById('dashboard-no-upcoming');
+            const viewAllUpcoming = document.getElementById('view-all-upcoming');
+            
+            if (upcomingBirthdays.length > 0) {
+                dashboardUpcomingList.innerHTML = '';
+                noUpcomingMsg.classList.add('hidden');
+                
+                // Display only first 5 upcoming
+                const displayBirthdays = upcomingBirthdays.slice(0, 5);
+                
+                displayBirthdays.forEach(person => {
+                    const fullName = getFullName(person);
+                    const daysText = person.daysUntil === 1 ? 'Tomorrow' : `In ${person.daysUntil} days`;
+                    
+                    const html = `
+                        <div class="flex items-center justify-between p-2 sm:p-3 border rounded-lg">
+                            <div class="flex items-center overflow-hidden">
+                                <div class="p-2 rounded-full bg-purple-100 text-purple-500 flex-shrink-0">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                                <div class="ml-3 min-w-0">
+                                    <h4 class="font-medium truncate">${fullName}</h4>
+                                    <p class="text-xs sm:text-sm text-gray-500 truncate">${person['Birth Date']}</p>
+                                </div>
+                            </div>
+                            <div class="bg-yellow-100 text-yellow-800 py-1 px-2 sm:px-3 rounded-full text-xs whitespace-nowrap ml-2 flex-shrink-0">
+                                ${daysText}
+                            </div>
+                        </div>
+                    `;
+                    dashboardUpcomingList.innerHTML += html;
+                });
+                
+                // Show "View all" link if there are more than 5 upcoming birthdays
+                if (upcomingBirthdays.length > 5) {
+                    viewAllUpcoming.classList.remove('hidden');
+                } else {
+                    viewAllUpcoming.classList.add('hidden');
+                }
+            } else {
+                noUpcomingMsg.classList.remove('hidden');
+                viewAllUpcoming.classList.add('hidden');
+            }
+            
+            // Update Today's Birthdays Tab
+            const todayTableBody = document.getElementById('today-table-body');
+            const todayTableContainer = document.getElementById('today-table-container');
+            const noBirthdaysTodayContainer = document.getElementById('no-birthdays-today-container');
+            
+            if (todayBirthdays.length > 0) {
+                todayTableBody.innerHTML = '';
+                todayTableContainer.classList.remove('hidden');
+                noBirthdaysTodayContainer.classList.add('hidden');
+                
+                todayBirthdays.forEach(person => {
+                    const fullName = getFullName(person);
+                    const row = `
+                        <tr>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="p-1 sm:p-2 rounded-full bg-blue-100 text-blue-500">
+                                        <i class="fas fa-user text-xs sm:text-sm"></i>
+                                    </div>
+                                    <div class="ml-2 sm:ml-3">
+                                        <div class="text-xs sm:text-sm font-medium text-gray-900">${fullName}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                <div class="text-xs sm:text-sm text-gray-900">${person['Birth Date']}</div>
+                            </td>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
+                                <div class="text-xs sm:text-sm text-gray-900">${person['Email Address']}</div>
+                            </td>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                <div class="text-xs sm:text-sm text-gray-900">${person['Mobile Number']}</div>
+                            </td>
+                        </tr>
+                    `;
+                    todayTableBody.innerHTML += row;
+                });
+            } else {
+                todayTableContainer.classList.add('hidden');
+                noBirthdaysTodayContainer.classList.remove('hidden');
+            }
+            
+            // Update Upcoming Birthdays Tab
+            const upcomingTableBody = document.getElementById('upcoming-table-body');
+            const upcomingTableContainer = document.getElementById('upcoming-table-container');
+            const noUpcomingContainer = document.getElementById('no-upcoming-container');
+            
+            if (upcomingBirthdays.length > 0) {
+                upcomingTableBody.innerHTML = '';
+                upcomingTableContainer.classList.remove('hidden');
+                noUpcomingContainer.classList.add('hidden');
+                
+                upcomingBirthdays.forEach(person => {
+                    const fullName = getFullName(person);
+                    const daysText = person.daysUntil === 1 ? 'Tomorrow' : `${person.daysUntil} days`;
+                    const isWithinWeek = person.daysUntil <= 7;
+                    
+                    const row = `
+                        <tr>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="p-1 sm:p-2 rounded-full bg-purple-100 text-purple-500">
+                                        <i class="fas fa-user text-xs sm:text-sm"></i>
+                                    </div>
+                                    <div class="ml-2 sm:ml-3">
+                                        <div class="text-xs sm:text-sm font-medium text-gray-900">${fullName}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                <div class="text-xs sm:text-sm text-gray-900">${person['Birth Date']}</div>
+                            </td>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
+                                <div class="text-xs sm:text-sm text-gray-900">${person['Email Address']}</div>
+                            </td>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
+                                <div class="text-xs sm:text-sm text-gray-900">${person['Mobile Number']}</div>
+                            </td>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${isWithinWeek ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">
+                                    ${daysText}
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                    upcomingTableBody.innerHTML += row;
+                });
+            } else {
+                upcomingTableContainer.classList.add('hidden');
+                noUpcomingContainer.classList.remove('hidden');
+            }
+            
+            // Update Directory Tab
+            const directoryTableBody = document.getElementById('directory-table-body');
+            directoryTableBody.innerHTML = '';
+            
+            birthdays.forEach(person => {
+                const fullName = getFullName(person);
+                const row = `
+                    <tr class="search-item">
+                        <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="p-1 sm:p-2 rounded-full bg-gray-100 text-gray-500">
+                                    <i class="fas fa-user text-xs sm:text-sm"></i>
+                                </div>
+                                <div class="ml-2 sm:ml-3">
+                                    <div class="text-xs sm:text-sm font-medium text-gray-900">${fullName}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            <div class="text-xs sm:text-sm text-gray-900">${person['Birth Date']}</div>
+                        </td>
+                        <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
+                            <div class="text-xs sm:text-sm text-gray-900">${person['Email Address']}</div>
+                        </td>
+                        <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            <div class="text-xs sm:text-sm text-gray-900">${person['Mobile Number']}</div>
+                        </td>
+                    </tr>
+                `;
+                directoryTableBody.innerHTML += row;
+            });
+            
+            // Update Send SMS Tab
+            const recipientsTableBody = document.getElementById('recipients-table-body');
+            recipientsTableBody.innerHTML = '';
+            
+            birthdays.forEach((person, index) => {
+                const fullName = getFullName(person);
+                const isToday = (parseInt(person.Month) === currentMonth && parseInt(person.Day) === currentDay);
+                
+                const row = `
+                    <tr class="${isToday ? 'bg-green-50' : ''}">
+                        <td class="py-2">
+                            <input type="checkbox" data-index="${index}" class="person-checkbox" ${isToday ? 'checked' : ''}>
+                        </td>
+                        <td class="px-2 py-2 text-xs sm:text-sm">${fullName}</td>
+                        <td class="px-2 py-2 text-xs sm:text-sm">${person['Birth Date']}</td>
+                        <td class="px-2 py-2 text-xs sm:text-sm hidden sm:table-cell">${person['Mobile Number']}</td>
+                    </tr>
+                `;
+                recipientsTableBody.innerHTML += row;
+            });
+        }
+
+        // Function to log activity
+        function logActivity(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            const activityLog = document.getElementById('activity-log');
+            activityLog.textContent += '\n' + logEntry;
+            activityLog.scrollTop = activityLog.scrollHeight;
+        }
+
+        // Function to send SMS using Mnotify API
+// Function to send SMS using Mnotify API
+async function sendSMS(person, message) {
+    // Get the information needed for the SMS
+    const fullName = getFullName(person);
+    let phone = person['Mobile Number'].toString();
+    const personalizedMessage = message.replace('{name}', person['First Name']);
+    
+    // Mnotify API configuration
+    const key = "qqYaIprq4RZ25q9JENdRqQbKZ"; // Mnotify API key
+    const sender_id = "4th-ir"; // Approved sender ID
+    
+    // Format the phone number (remove leading zeros)
+    phone = phone.replace(/^0+/, '');
+    
+    try {
+        // URL encode the message
+        const encodedMsg = encodeURIComponent(personalizedMessage);
+        
+        // Construct the API URL
+        const apiUrl = `https://apps.mnotify.net/smsapi?key=${key}&to=${phone}&msg=${encodedMsg}&sender_id=${sender_id}`;
+        
+        logActivity(`Sending SMS to ${fullName} (${phone})`);
+        console.log("Sending SMS to:", apiUrl);
+        
+        // Make the actual API call using fetch
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        
+        // Log the full response to see its structure
+        console.log("SMS API response:", data);
+        
+        if (data.code === "1000" || data.status === "success") {
+            smsSent.add(phone);
+            logActivity(`SUCCESS: Sent message to ${fullName} (${phone}) - Response code: ${data.code || "success"}`);
+            return {success: true, message: `Message sent to ${fullName}`, code: data.code || "success"};
+        } else {
+            const errorMessages = {
+                "1002": "SMS sending failed",
+                "1003": "Insufficient balance",
+                "1004": "Invalid API key",
+                "1005": "Invalid phone number",
+                "1006": "Invalid Sender ID",
+                "1008": "Empty message",
+                "1009": "Empty from date and to date",
+                "1010": "No messages has been sent on the specified dates",
+                "1011": "Numeric Sender IDs are not allowed",
+                "1012": "Sender ID is not registered"
+            };
+            
+            const errorCode = data.code || "unknown";
+            const errorMessage = errorMessages[errorCode] || data.message || data.error || "Unknown error";
+            logActivity(`FAILED: Could not send message to ${fullName} (${phone}) - Error code: ${errorCode} - ${errorMessage}`);
+            return {success: false, message: `Failed to send message to ${fullName}: ${errorMessage}`, code: errorCode};
+        }
+    } catch (error) {
+        logActivity(`ERROR: Exception sending message to ${fullName} (${phone}): ${error.message}`);
+        console.error("SMS sending error:", error);
+        return {success: false, message: `Exception sending message to ${fullName}: ${error.message}`, code: "error"};
+    }
+} 
+   // Function to check SMS balance
+async function checkSMSBalance() {
+    // Mnotify API configuration
+    const key = "qqYaIprq4RZ25q9JENdRqQbKZ"; // Mnotify API key
+    
+    try {
+        // Construct the API URL for balance check
+        const apiUrl = `https://apps.mnotify.net/smsapi/balance?key=${key}`;
+        
+        logActivity(`Checking SMS balance...`);
+        
+        // Make the actual API call using fetch
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        
+        // Log the full response to see its structure
+        console.log("Balance API response:", data);
+        
+        if (data.code === "1000" || data.status === "success") {
+            // Handle various response formats
+            const balance = data.balance || data.credit || data.amount || 0;
+            logActivity(`Current SMS balance: ${balance} credits`);
+            return {success: true, balance: balance};
+        } else {
+            // Create error message based on available properties
+            const errorCode = data.code || "unknown";
+            const errorMessage = data.message || data.error || "Unknown error checking balance";
+            logActivity(`Failed to check balance - Error code: ${errorCode} - ${errorMessage}`);
+            return {success: false, message: `Failed to check balance: ${errorMessage}`, code: errorCode};
+        }
+    } catch (error) {
+        logActivity(`ERROR: Exception checking SMS balance: ${error.message}`);
+        console.error("Balance check error:", error);
+        return {success: false, message: `Exception checking SMS balance: ${error.message}`, code: "error"};
+    }
+}
+
+        // Tab switching
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Show selected tab content
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            
+            // Update active tab styling
+            document.querySelectorAll('nav a').forEach(a => {
+                a.classList.remove('border-blue-500', 'text-blue-500');
+                a.classList.add('border-transparent');
+            });
+            
+            document.getElementById('tab-' + tabId).classList.add('border-blue-500', 'text-blue-500');
+            document.getElementById('tab-' + tabId).classList.remove('border-transparent');
+            
+            activeTab = tabId;
+        }
+
+        // Initialize event listeners
+        function initEventListeners() {
+            // Tab navigation
+            document.querySelectorAll('nav a').forEach(a => {
+                a.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabId = this.getAttribute('href').substring(1);
+                    showTab(tabId);
+                });
+            });
+            
+            // Directory search
+            document.getElementById('directorySearch').addEventListener('keyup', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#directoryTable tbody tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+            
+            document.getElementById('sendSmsBtn').addEventListener('click', async function() {
+                const message = document.getElementById('custom_message').value;
+                const selectedCheckboxes = document.querySelectorAll('.person-checkbox:checked');
+                const statusDiv = document.getElementById('sms-status');
+                
+                if (selectedCheckboxes.length === 0) {
+                    statusDiv.textContent = "No recipients selected!";
+                    statusDiv.className = "bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 sm:p-4 mb-4 sm:mb-6 text-sm";
+                    statusDiv.classList.remove('hidden');
+                    return;
+                }
+                
+                // Check balance before sending
+                const balanceResult = await checkSMSBalance();
+                if (!balanceResult.success) {
+                    statusDiv.textContent = `Could not check SMS balance: ${balanceResult.message}`;
+                    statusDiv.className = "bg-red-100 border-l-4 border-red-500 text-red-700 p-3 sm:p-4 mb-4 sm:mb-6 text-sm";
+                    statusDiv.classList.remove('hidden');
+                    return;
+                }
+                
+                // If balance is too low, warn the user
+                if (balanceResult.balance < selectedCheckboxes.length) {
+                    if (!confirm(`Warning: Your SMS balance (${balanceResult.balance} credits) is lower than the number of messages to send (${selectedCheckboxes.length}). Some messages may fail. Continue anyway?`)) {
+                        return;
+                    }
+                }
+                
+                // Show sending status
+                statusDiv.textContent = `Sending messages to ${selectedCheckboxes.length} recipients...`;
+                statusDiv.className = "bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-4 sm:mb-6 text-sm";
+                statusDiv.classList.remove('hidden');
+                
+                let successCount = 0;
+                let failCount = 0;
+                const errors = {};
+                
+                // Disable send button while processing
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-1 sm:mr-2"></i>Sending...';
+                
+                for (const checkbox of selectedCheckboxes) {
+                    const index = parseInt(checkbox.getAttribute('data-index'));
+                    const person = birthdays[index];
+                    
+                    const result = await sendSMS(person, message);
+                    if (result.success) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                        // Track error codes for reporting
+                        if (errors[result.code]) {
+                            errors[result.code].count++;
+                        } else {
+                            errors[result.code] = { 
+                                message: result.message.replace(`Failed to send message to ${getFullName(person)}: `, ''),
+                                count: 1
+                            };
+                        }
+                    }
+                    
+                    // Update status message as we go
+                    statusDiv.textContent = `Progress: ${successCount + failCount} of ${selectedCheckboxes.length} messages processed...`;
+                }
+                
+                // Re-enable send button
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-paper-plane mr-1 sm:mr-2"></i>Send Messages';
+                
+                // Prepare detailed error message if there were failures
+                let errorDetails = '';
+                if (failCount > 0) {
+                    errorDetails = '\n\nErrors encountered:\n';
+                    for (const code in errors) {
+                        errorDetails += `- ${errors[code].message} (${errors[code].count} occurrences, code: ${code})\n`;
+                    }
+                }
+                
+                // Final status message
+                statusDiv.textContent = `Sent ${successCount} messages successfully. Failed: ${failCount}${errorDetails}`;
+                statusDiv.className = successCount > 0 ? 
+                    "bg-green-100 border-l-4 border-green-500 text-green-700 p-3 sm:p-4 mb-4 sm:mb-6 text-sm" : 
+                    "bg-red-100 border-l-4 border-red-500 text-red-700 p-3 sm:p-4 mb-4 sm:mb-6 text-sm";
+                
+                // Update SMS count on dashboard
+                document.getElementById('sms-count').textContent = smsSent.size;
+            });
+            
+            // Select All/None/Today buttons
+            document.getElementById('selectAllBtn').addEventListener('click', function() {
+                document.querySelectorAll('.person-checkbox').forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+            });
+            
+            document.getElementById('selectNoneBtn').addEventListener('click', function() {
+                document.querySelectorAll('.person-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            });
+            
+            document.getElementById('selectTodayBtn').addEventListener('click', function() {
+                document.querySelectorAll('.person-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Today's birthdays are marked with bg-green-50
+                document.querySelectorAll('tr.bg-green-50 .person-checkbox').forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+            });
+            
+            // Check Balance button
+            document.getElementById('check-balance-btn').addEventListener('click', async function() {
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Checking...';
+                
+                const result = await checkSMSBalance();
+                
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-coins mr-1"></i>Check Balance';
+                
+                if (result.success) {
+                    alert(`Current SMS Balance: ${result.balance} credits`);
+                } else {
+                    alert(`Error checking balance: ${result.message}`);
+                }
+            });
+        }
+
+        // Initialize the app
+        function init() {
+            logActivity("Initializing Birthday Dashboard");
+            
+            // Load birthday data
+            loadBirthdayData();
+            
+            // Initialize event listeners
+            initEventListeners();
+            
+            // Show the dashboard tab
+            showTab('dashboard');
+            
+            logActivity("Birthday Dashboard initialized successfully");
+        }
+
+        // Start the application when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Function to automatically send birthday SMS at 6am
+async function autoSendBirthdaySMS() {
+    // Log that function was called
+    logActivity("Auto SMS function triggered - checking if SMS should be sent");
+    
+    const now = new Date();
+    const currentHour = now.getHours();
+    
+    // Check if it's around 6am (between 6:00 and 6:05 AM to give a small window)
+    if (currentHour === 6 && now.getMinutes() < 5) {
+        logActivity("Auto SMS time window active (6:00-6:05 AM)");
+        
+        // Check if there are any birthdays today
+        if (todayBirthdays.length === 0) {
+            logActivity("No birthdays today, no auto SMS needed");
+            scheduleNextAutoSMS();
+            return;
+        }
+        
+        // Use the default message from the form or set a default one
+        let message = document.getElementById('custom_message').value;
+        if (!message || message.trim() === '') {
+            message = "Happy Birthday {name}! 🎂 Wishing you a fantastic day filled with joy and celebration!";
+        }
+        
+        // Check SMS balance before sending
+        const balanceResult = await checkSMSBalance();
+        if (!balanceResult.success) {
+            logActivity(`ERROR: Auto SMS - Could not check SMS balance: ${balanceResult.message}`);
+            scheduleNextAutoSMS();
+            return;
+        }
+        
+        // If balance is too low, log warning and stop
+        if (balanceResult.balance < todayBirthdays.length) {
+            logActivity(`WARNING: Auto SMS - Insufficient balance (${balanceResult.balance} credits) for ${todayBirthdays.length} messages. Auto SMS aborted.`);
+            scheduleNextAutoSMS();
+            return;
+        }
+        
+        logActivity(`Auto SMS - Starting to send ${todayBirthdays.length} birthday messages`);
+        
+        let successCount = 0;
+        let failCount = 0;
+        
+        // Send messages to each person with a birthday today
+        for (const person of todayBirthdays) {
+            // Check if we already sent to this number today (in case function runs multiple times)
+            const phone = person['Mobile Number'].toString().replace(/^0+/, '');
+            if (smsSent.has(phone)) {
+                logActivity(`Auto SMS - Already sent to ${getFullName(person)} today, skipping`);
+                continue;
+            }
+            
+            // Send the SMS
+            const result = await sendSMS(person, message);
+            if (result.success) {
+                successCount++;
+            } else {
+                failCount++;
+            }
+        }
+        
+        // Log results
+        logActivity(`Auto SMS complete - Sent ${successCount} messages successfully. Failed: ${failCount}`);
+    } else {
+        // Not time yet, just log it was checked
+        logActivity(`Auto SMS check - Not within send window (current hour: ${currentHour})`);
+    }
+    
+    // Schedule the next check
+    scheduleNextAutoSMS();
+}
+
+// Function to schedule the next autoSendBirthdaySMS run
+function scheduleNextAutoSMS() {
+    const now = new Date();
+    let nextCheck;
+    
+    // If it's before 6am, schedule for 6am today
+    if (now.getHours() < 6) {
+        nextCheck = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0);
+    } 
+    // If it's after 6am but before midnight, schedule for 6am tomorrow
+    else {
+        nextCheck = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 6, 0, 0, 0);
+    }
+    
+    // Calculate milliseconds until next check
+    const timeUntilNextCheck = nextCheck.getTime() - now.getTime();
+    
+    // Log when the next check will happen
+    const nextCheckTime = nextCheck.toLocaleTimeString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    logActivity(`Next auto SMS check scheduled for ${nextCheckTime}`);
+    
+    // Schedule the next check
+    setTimeout(autoSendBirthdaySMS, timeUntilNextCheck);
+}
+
+// Add this to the init function to start the auto SMS feature
+function init() {
+    logActivity("Initializing Birthday Dashboard");
+    
+    // Load birthday data
+    loadBirthdayData();
+    
+    // Initialize event listeners
+    initEventListeners();
+    
+    // Show the dashboard tab
+    showTab('dashboard');
+    
+    // Start the auto SMS scheduler
+    scheduleNextAutoSMS();
+    
+    logActivity("Birthday Dashboard initialized successfully");
+}
+    </script>
+</body>
+</html>
