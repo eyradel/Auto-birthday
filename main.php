@@ -8,8 +8,7 @@ ini_set('display_errors', 1);
 // include("includes/conn.php");
 
 // Configuration for Mnotify SMS API
-$key = "qqYaIprq4RZ25q9JENdRqQbKZ"; // Your Mnotify API key
-$sender_id = "4th-ir"; // Your approved sender ID
+
 
 // Get current date and time
 $today = date("d/m");
